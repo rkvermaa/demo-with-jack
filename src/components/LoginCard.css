@@ -1,0 +1,173 @@
+/* ============================================================
+   LoginCard styles — matches login.png exactly
+   ============================================================ */
+
+/* Card container — semi-transparent white panel, centred, no explicit border */
+.login-card {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 2.5rem 2.75rem 2.75rem;
+  width: 320px;
+  max-width: 90vw;
+  color: #ffffff;
+  /* No drop-shadow beyond what login.png shows */
+}
+
+/* ── Header: avatar icon + heading ── */
+.login-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.75rem;
+}
+
+.avatar-icon {
+  width: 52px;
+  height: 52px;
+  color: #ffffff;
+  margin-bottom: 0.6rem;
+}
+
+.login-card__heading {
+  font-size: 1.6rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Form ── */
+.login-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Field wrapper (input row + inline error) ── */
+.login-card__field-wrapper {
+  margin-bottom: 1.1rem;
+}
+
+/* Input row: icon + input on same baseline, underline only */
+.login-card__input-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.7);
+  padding-bottom: 4px;
+  gap: 0.5rem;
+}
+
+.login-card__input-row--error {
+  border-bottom-color: #ff8a8a;
+}
+
+.field-icon {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.login-card__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.95rem;
+  padding: 2px 0;
+  /* Placeholder colour */
+}
+
+.login-card__input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Autofill override so browser doesn't paint a white background */
+.login-card__input:-webkit-autofill,
+.login-card__input:-webkit-autofill:hover,
+.login-card__input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Inline field error */
+.login-card__field-error {
+  display: block;
+  font-size: 0.75rem;
+  color: #ffb3b3;
+  margin-top: 3px;
+  padding-left: 26px; /* align with input text, past the icon */
+}
+
+/* Generic auth error (wrong credentials) */
+.login-card__auth-error {
+  font-size: 0.82rem;
+  color: #ffb3b3;
+  text-align: center;
+  margin-bottom: 0.6rem;
+}
+
+/* ── Remember me / Forgot Password? row ── */
+.login-card__remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
+  margin-top: 0.2rem;
+}
+
+.login-card__remember-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.login-card__checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: #3a7bd5;
+  cursor: pointer;
+}
+
+.login-card__forgot-link {
+  font-size: 0.82rem;
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.login-card__forgot-link:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+/* ── LOGIN button — full-width, teal-to-dark-blue, rounded ── */
+.login-card__submit-btn {
+  width: 100%;
+  padding: 0.7rem 0;
+  background: linear-gradient(to right, #3a7bd5, #2c5f8a);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.login-card__submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.login-card__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
