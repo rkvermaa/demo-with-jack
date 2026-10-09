@@ -64,8 +64,12 @@ export class FixturesController {
   /**
    * AC5b / AC11: Player wallet scoped to a specific player.
    * PlayerScopeGuard enforces that PLAYER_X cannot read PLAYER_Y's wallet.
+   * ADMIN is listed explicitly so the decorator accurately reflects all
+   * permitted roles (RolesGuard also short-circuits for ADMIN, but the
+   * annotation must not mislead future readers into thinking only PLAYERs
+   * may call this route).
    */
-  @Roles(Role.PLAYER)
+  @Roles(Role.PLAYER, Role.ADMIN)
   @UseGuards(PlayerScopeGuard)
   @Get('player/wallet/:playerId')
   getWalletById(
