@@ -115,9 +115,10 @@ describe('RolesGuard', () => {
     expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
   });
 
-  // (f) Each of the four valid Role enum values is accepted when it matches.
+  // (f) Each of the authenticated Role enum values is accepted when it matches.
+  // Note: Role.PUBLIC is intentionally excluded — a PUBLIC-role JWT must never
+  // pass an authenticated route (see F1 fix).
   it.each([
-    [Role.PUBLIC, Role.PUBLIC],
     [Role.PLAYER, Role.PLAYER],
     [Role.OPERATOR_ADMIN, Role.OPERATOR_ADMIN],
     [Role.ADMIN, Role.ADMIN],
@@ -125,6 +126,26 @@ describe('RolesGuard', () => {
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([requiredRole]);
     const ctx = buildContext(userRole);
     expect(guard.canActivate(ctx)).toBe(true);
+  });
+
+  // F1: A JWT with role=PUBLIC must be rejected on any authenticated route.
+  it('should throw ForbiddenException when role=PUBLIC hits an authenticated route', () => {
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Role.PLAYER]);
+    const ctx = buildContext(Role.PUBLIC);
+    expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
+  });
+
+  // F1: A JWT with role=PUBLIC is also rejected on a route with no @Roles metadata
+  // that has been reached after JwtAuthGuard (i.e., requiredRoles is empty/undefined).
+  // The guard returns true for no-metadata routes (JwtAuthGuard already ran), but
+  // PUBLIC-role JWTs should not reach authenticated routes at all — this is enforced
+  // by the check when @Roles IS present. For no-metadata routes the guard passes
+  // through (the route itself is unannotated, so any authenticated user may call it).
+  // The important invariant is: @Roles(Role.PUBLIC) is never used in production code.
+  it('should throw ForbiddenException when role=PUBLIC hits a @Roles(Role.OPERATOR_ADMIN) route', () => {
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue([Role.OPERATOR_ADMIN]);
+    const ctx = buildContext(Role.PUBLIC);
+    expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
   });
 
   // Guard reads role from JWT payload (request.user), not from DB.

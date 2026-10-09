@@ -50,6 +50,13 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Invalid role claim');
     }
 
+    // F1: PUBLIC is a conceptual label for unauthenticated access only.
+    // A JWT carrying role=PUBLIC must never be granted access to any
+    // authenticated route, regardless of @Roles metadata.
+    if (user.role === Role.PUBLIC) {
+      throw new ForbiddenException('PUBLIC role cannot access authenticated routes');
+    }
+
     // AC5: ADMIN is a superset — passes every role check.
     if (user.role === Role.ADMIN) {
       return true;
