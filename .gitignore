@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Coverage artefacts (generated on every run — never commit)
+coverage/
+coverage-e2e/
+coverage*/
+
+# Editor / work-in-progress backup files
+*.bak
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -121,6 +121,14 @@ describe('RBAC Integration Tests (e2e)', () => {
     expect(res.status).toBe(200);
   });
 
+  it('AC5d — ADMIN JWT on GET /admin/users returns 200', async () => {
+    const token = makeJwt(Role.ADMIN, 'admin-1');
+    const res = await request(app.getHttpServer())
+      .get('/admin/users')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+  });
+
   // ── AC8: Tampered role claim returns 403 ─────────────────────────────────
 
   it('AC8 — JWT with role=SUPERUSER on GET /player/wallet returns 403', async () => {
