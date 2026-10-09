@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm test -- --coverage
+        env:
+          JWT_SECRET: ci-test-secret
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+        env:
+          JWT_SECRET: ci-test-secret
+
+      - name: Verify no stray role literals outside roles.enum.ts
+        run: |
+          # Grep for role string literals; only roles.enum.ts should define them
+          MATCHES=$(grep -rn \
+            --include='*.ts' \
+            --exclude='*.spec.ts' \
+            --exclude='*.e2e-spec.ts' \
+            -E "'(PUBLIC|PLAYER|OPERATOR_ADMIN|ADMIN)'" \
+            src/ \
+            | grep -v 'src/auth/roles.enum.ts' \
+            | grep -v 'src/auth/index.ts' \
+            || true)
+          if [ -n "$MATCHES" ]; then
+            echo "ERROR: Role string literals found outside roles.enum.ts:"
+            echo "$MATCHES"
+            exit 1
+          fi
+          echo "OK: Role literals are confined to roles.enum.ts"
