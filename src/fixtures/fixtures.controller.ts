@@ -41,14 +41,6 @@ export class FixturesController {
     return { message: 'login stub' };
   }
 
-  /** AC6: Registration stub — no token required. */
-  @Public()
-  @Post('auth/register')
-  @HttpCode(201)
-  register(): { message: string } {
-    return { message: 'register stub' };
-  }
-
   // ── PLAYER routes ────────────────────────────────────────────────────────
 
   /**
