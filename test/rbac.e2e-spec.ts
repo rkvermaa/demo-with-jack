@@ -6,6 +6,8 @@ import * as jwt from 'jsonwebtoken';
 import { AppModule } from '../src/app.module';
 import { DatabaseModule } from '../src/database/database.module';
 import { Role } from '../src/auth/roles.enum';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../src/entities/user.entity';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'changeme';
 
@@ -37,11 +39,21 @@ describe('RBAC Integration Tests (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
+    const mockUserRepository = {
+      findOneBy: jest.fn().mockResolvedValue(null),
+      create: jest.fn().mockImplementation((dto: Partial<User>) => dto),
+      save: jest.fn().mockImplementation((entity: Partial<User>) =>
+        Promise.resolve({ id: 'test-uuid', role: Role.PLAYER, ...entity }),
+      ),
+    };
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideModule(DatabaseModule)
       .useModule(DatabaseModuleStub)
+      .overrideProvider(getRepositoryToken(User))
+      .useValue(mockUserRepository)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -65,9 +77,9 @@ describe('RBAC Integration Tests (e2e)', () => {
     expect(res.status).toBe(200);
   });
 
-  it('AC6 — POST /auth/register with no token returns 201', async () => {
+  it('AC6 — POST /auth/register with no body returns 400 (ValidationPipe active)', async () => {
     const res = await request(app.getHttpServer()).post('/auth/register');
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(400);
   });
 
   // ── AC2: Unauthenticated request to protected route returns 401 ──────────

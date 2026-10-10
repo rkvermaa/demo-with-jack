@@ -7,16 +7,22 @@ const config: Config = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  // Coverage is scoped to src/auth/** — the RBAC infrastructure this story owns.
-  // Fixture controllers and app bootstrap are exercised by e2e tests, not unit tests.
-  // Barrel (index.ts) and module wiring (auth.module.ts) are excluded — they contain
-  // no logic, only re-exports and DI declarations.
-  // src/database/** is excluded: TypeORM wiring and migration files contain no
-  // testable logic and would dilute the 80% gate if included.
+  // Coverage is scoped to src/auth/** (RBAC infrastructure) and the new
+  // src/register/** (registration feature) and src/entities/** (User entity).
+  //
+  // Excluded from coverage:
+  //  - Module files (pure DI wiring, no logic)
+  //  - Barrel index files (re-exports only)
+  //  - src/database/** (TypeORM wiring and migration files, no testable logic)
   collectCoverageFrom: [
     'src/auth/**/*.(t|j)s',
     '!src/auth/auth.module.ts',
     '!src/auth/index.ts',
+    'src/register/**/*.(t|j)s',
+    '!src/register/register.module.ts',
+    '!src/register/**/*.spec.ts',
+    'src/entities/**/*.(t|j)s',
+    '!src/entities/**/*.spec.ts',
     '!src/database/**',
   ],
   coverageDirectory: './coverage',

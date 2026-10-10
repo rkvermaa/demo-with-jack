@@ -8,6 +8,12 @@
   },
   "collectCoverageFrom": [
     "src/fixtures/**/*.(t|j)s",
+    "!src/fixtures/**/*.spec.ts",
+    "src/register/**/*.(t|j)s",
+    "!src/register/**/*.spec.ts",
+    "!src/register/register.module.ts",
+    "src/entities/**/*.(t|j)s",
+    "!src/entities/**/*.spec.ts",
     "src/app.module.ts"
   ],
   "coverageDirectory": "./coverage-e2e",
