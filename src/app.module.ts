@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { RolesGuard } from './auth/roles.guard';
 import { FixturesModule } from './fixtures/fixtures.module';
+import { DatabaseModule } from './database/database.module';
 
 /**
  * AppModule — root module.
@@ -16,7 +17,7 @@ import { FixturesModule } from './fixtures/fixtures.module';
  * Use @Roles(...) to declare required roles on a handler or controller.
  */
 @Module({
-  imports: [AuthModule, FixturesModule],
+  imports: [DatabaseModule, AuthModule, FixturesModule],
   providers: [
     {
       provide: APP_GUARD,
