@@ -1,12 +1,21 @@
 import 'reflect-metadata';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import * as jwt from 'jsonwebtoken';
 import { AppModule } from '../src/app.module';
+import { DatabaseModule } from '../src/database/database.module';
 import { Role } from '../src/auth/roles.enum';
 
 const JWT_SECRET = process.env['JWT_SECRET'] ?? 'changeme';
+
+/**
+ * Stub that replaces DatabaseModule in e2e tests so no real PostgreSQL
+ * connection is attempted.  All routes under test are pure HTTP/auth logic
+ * and do not touch the database.
+ */
+@Module({})
+class DatabaseModuleStub {}
 
 /**
  * Signs a JWT with the given role, sub, and optional operatorId.
@@ -30,7 +39,10 @@ describe('RBAC Integration Tests (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideModule(DatabaseModule)
+      .useModule(DatabaseModuleStub)
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
